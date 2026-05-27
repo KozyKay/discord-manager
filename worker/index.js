@@ -23,7 +23,7 @@ export default {
     const discordRes = await fetch(discordUrl, {
       method: request.method,
       headers: {
-        Authorization: `Bot ${env.BOT_TOKEN}`,
+        Authorization: `Bot ${env.Bot_Token}`,
         "Content-Type": "application/json",
       },
       body,
