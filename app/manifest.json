@@ -1,0 +1,14 @@
+{
+  "name": "Kay's Server Manager",
+  "short_name": "Kay's Server",
+  "description": "Discord server manager for Kay Arcade",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2e2e2e",
+  "theme_color": "#f4a7b9",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

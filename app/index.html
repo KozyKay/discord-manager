@@ -2,377 +2,1221 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discord Manager</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kay's Server">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Kay's Server Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    min-height: 100vh;
-    background: #1a1b26;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Segoe UI', sans-serif;
-    color: #c9d1d9;
-  }
-  #header {
-    background: #111218;
-    border-bottom: 1px solid #2d2f3e;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  #header-icon {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #5865F2, #7289da);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
-  #header-title { font-weight: 700; font-size: 15px; color: #e6edf3; }
-  #header-sub { font-size: 11px; color: #7289da; margin-top: 2px; }
-  #mee6-btn {
-    margin-left: auto;
-    background: #5865F2;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  #messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 16px 8px;
-  }
-  .msg-wrap {
-    margin-bottom: 12px;
-    display: flex;
-  }
-  .msg-wrap.user { justify-content: flex-end; }
-  .msg-wrap.bot, .msg-wrap.system { justify-content: flex-start; }
-  .bubble {
-    max-width: 85%;
-    border-radius: 16px 16px 16px 4px;
-    padding: 10px 14px;
-    font-size: 14px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .bubble.user {
-    background: linear-gradient(135deg, #5865F2, #7289da);
-    border-radius: 16px 16px 4px 16px;
-    color: #fff;
-  }
-  .bubble.bot { background: #1e2030; color: #c9d1d9; }
-  .bubble.error { background: #2d1a1a; border-left: 3px solid #e74c3c; color: #c9d1d9; }
-  .bubble.system { background: #1e2030; border: 1px solid #2d2f3e; color: #c9d1d9; }
-  .bubble strong { color: #e6edf3; }
-  #typing {
-    display: none;
-    justify-content: flex-start;
-    margin-bottom: 12px;
-  }
-  #typing .bubble {
-    display: flex; gap: 6px; align-items: center;
-    padding: 10px 18px;
-  }
-  .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #7289da;
-    animation: bounce 1.2s infinite;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-    40% { transform: translateY(-6px); opacity: 1; }
-  }
-  #quickbar {
-    padding: 8px 16px 0;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .quick-btn {
-    background: #1e2030;
-    border: 1px solid #2d2f3e;
-    color: #8b92a8;
-    border-radius: 20px;
-    padding: 5px 12px;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  #inputarea {
-    padding: 12px 16px 24px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-  }
-  #input {
-    flex: 1;
-    background: #111218;
-    border: 1px solid #2d2f3e;
-    border-radius: 12px;
-    color: #e6edf3;
-    font-size: 14px;
-    padding: 10px 14px;
-    resize: none;
-    outline: none;
-    line-height: 1.5;
-    font-family: inherit;
-  }
-  #input:focus { border-color: #5865F2; }
-  #input::placeholder { color: #4a4f66; }
-  #send-btn {
-    background: linear-gradient(135deg, #5865F2, #7289da);
-    border: none;
-    border-radius: 10px;
-    width: 42px; height: 42px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    flex-shrink: 0;
-    color: white;
-  }
-  #send-btn:disabled { background: #2d2f3e; cursor: default; }
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-thumb { background: #2d2f3e; border-radius: 4px; }
+:root {
+  --bg: #2e2e2e;
+  --bg2: #383838;
+  --bg3: #424242;
+  --card: #3a3a3a;
+  --pink: #f4a7b9;
+  --pink-light: #f9cdd8;
+  --pink-deep: #e8839a;
+  --pastel-blue: #a8d8ea;
+  --pastel-purple: #c9b8e8;
+  --pastel-green: #b8e0b8;
+  --pastel-yellow: #f0e0a0;
+  --pastel-peach: #f7c5a0;
+  --text: #f0e8ea;
+  --text-muted: #a89898;
+  --border: #505050;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.header-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(244,167,185,0.4);
+}
+.header-title { font-size: 16px; font-weight: 800; color: var(--pink-light); letter-spacing: 0.3px; }
+.header-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+.header-actions { margin-left: auto; display: flex; gap: 8px; }
+.header-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.header-btn:hover { border-color: var(--pink); color: var(--pink); }
+.header-btn.active { background: var(--pink); color: #2e2e2e; border-color: var(--pink); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 12px;
+  gap: 4px;
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-family: inherit;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.tab.active { color: var(--pink); border-bottom-color: var(--pink); }
+
+/* MAIN AREA */
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* CHAT PANEL */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* MESSAGES */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.msg-row { display: flex; }
+.msg-row.user { justify-content: flex-end; }
+.msg-row.bot { justify-content: flex-start; }
+.bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.bubble.user {
+  background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+  color: #2a2020;
+  border-radius: 18px 18px 4px 18px;
+  font-weight: 600;
+}
+.bubble.bot {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px 18px 18px 4px;
+  color: var(--text);
+}
+.bubble.error {
+  background: #3d2525;
+  border: 1px solid #7a3535;
+  border-radius: 18px 18px 18px 4px;
+  color: #f0a0a0;
+}
+.bubble.system {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  color: var(--text-muted);
+  font-size: 13px;
+  max-width: 95%;
+}
+.bubble strong { color: var(--pink-light); }
+.bubble a { color: var(--pastel-blue); }
+
+/* TYPING */
+.typing-row { display: flex; justify-content: flex-start; }
+.typing-bubble {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 16px;
+  display: flex; gap: 5px; align-items: center;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: bounce 1.2s infinite; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%,80%,100% { transform: translateY(0); opacity:0.4; }
+  40% { transform: translateY(-5px); opacity:1; }
+}
+
+/* COMMAND BUTTONS */
+.cmd-section {
+  padding: 10px 12px 6px;
+  flex-shrink: 0;
+}
+.cmd-section-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+.cmd-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.cmd-scroll::-webkit-scrollbar { display: none; }
+.cmd-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.cmd-btn:hover { border-color: var(--pink); color: var(--pink); background: rgba(244,167,185,0.08); }
+.cmd-btn.pink { border-color: rgba(244,167,185,0.3); color: var(--pink-light); }
+.cmd-btn.blue { border-color: rgba(168,216,234,0.3); color: var(--pastel-blue); }
+.cmd-btn.purple { border-color: rgba(201,184,232,0.3); color: var(--pastel-purple); }
+.cmd-btn.green { border-color: rgba(184,224,184,0.3); color: var(--pastel-green); }
+.cmd-btn.yellow { border-color: rgba(240,224,160,0.3); color: var(--pastel-yellow); }
+.cmd-btn.peach { border-color: rgba(247,197,160,0.3); color: var(--pastel-peach); }
+
+/* INPUT */
+.input-area {
+  padding: 10px 12px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+.input-wrap { flex: 1; position: relative; }
+textarea#input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 10px 14px;
+  resize: none;
+  outline: none;
+  line-height: 1.5;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  max-height: 100px;
+}
+textarea#input:focus { border-color: var(--pink); }
+textarea#input::placeholder { color: #666; }
+.send-btn {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+  border: none;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(244,167,185,0.3);
+  color: #2a2020;
+  font-weight: 800;
+}
+.send-btn:disabled { background: var(--bg3); box-shadow: none; color: var(--text-muted); cursor: default; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--pink-light);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-close {
+  margin-left: auto;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  width: 28px; height: 28px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.modal input, .modal select, .modal textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 9px 12px;
+  outline: none;
+  font-family: inherit;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--pink); }
+.modal select option { background: var(--bg2); }
+.modal-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+  border: none;
+  border-radius: 12px;
+  color: #2a2020;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 4px;
+  transition: opacity 0.2s;
+}
+.modal-btn:hover { opacity: 0.9; }
+.modal-btn.secondary {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-top: 8px;
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.color-preview {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  margin-bottom: 12px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+.template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.template-card {
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: var(--text);
+}
+.template-card:hover, .template-card.selected { border-color: var(--pink); background: rgba(244,167,185,0.08); }
+.template-card .t-icon { font-size: 22px; margin-bottom: 4px; }
+.template-card .t-name { font-size: 12px; font-weight: 700; }
+
+/* DIAGNOSTICS */
+.diag-panel { padding: 16px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; }
+.diag-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.diag-card-title { font-size: 13px; font-weight: 800; color: var(--pink-light); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.diag-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+.diag-row:last-child { border-bottom: none; }
+.diag-label { color: var(--text-muted); font-weight: 600; }
+.diag-val { font-weight: 700; }
+.status-ok { color: var(--pastel-green); }
+.status-err { color: #f0a0a0; }
+.status-checking { color: var(--pastel-yellow); }
+.diag-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--pink);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 </style>
 </head>
 <body>
 
-<div id="header">
-  <div id="header-icon">⚙️</div>
+<div class="header">
+  <div class="header-logo">🌸</div>
   <div>
-    <div id="header-title">Discord Manager</div>
-    <div id="header-sub">Server setup assistant</div>
+    <div class="header-title">Kay's Server</div>
+    <div class="header-sub">Discord Manager</div>
   </div>
-  <a id="mee6-btn" href="https://mee6.xyz/dashboard/1450701622744449056" target="_blank">Mee6 →</a>
+  <div class="header-actions">
+    <button class="header-btn" onclick="showTab('chat')">Chat</button>
+    <button class="header-btn" onclick="showTab('diag')">Diagnostics</button>
+  </div>
 </div>
 
-<div id="messages"></div>
-
-<div id="typing">
-  <div class="bubble bot"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+<div class="tabs">
+  <button class="tab active" data-tab="all" onclick="setCategory('all')">✨ All</button>
+  <button class="tab" data-tab="roles" onclick="setCategory('roles')">🏷️ Roles</button>
+  <button class="tab" data-tab="channels" onclick="setCategory('channels')">💬 Channels</button>
+  <button class="tab" data-tab="members" onclick="setCategory('members')">👥 Members</button>
+  <button class="tab" data-tab="announce" onclick="setCategory('announce')">📢 Announce</button>
+  <button class="tab" data-tab="info" onclick="setCategory('info')">🔍 Info</button>
 </div>
 
-<div id="quickbar">
-  <button class="quick-btn" onclick="setInput('List channels')">List channels</button>
-  <button class="quick-btn" onclick="setInput('List roles')">List roles</button>
-  <button class="quick-btn" onclick="setInput('Mee6 setup')">Mee6 setup</button>
+<div class="main">
+  <!-- CHAT PANEL -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="messages" id="messages"></div>
+    <div class="typing-row" id="typing" style="display:none; padding: 0 14px 8px;">
+      <div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <!-- COMMAND BUTTONS -->
+    <div class="cmd-section" id="cmdSection">
+      <div class="cmd-section-title">Quick Commands</div>
+      <div class="cmd-scroll" id="cmdScroll"></div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-wrap">
+        <textarea id="input" rows="1" placeholder="Tell me what to do..."></textarea>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="send()">↑</button>
+    </div>
+  </div>
+
+  <!-- DIAGNOSTICS PANEL -->
+  <div class="diag-panel" id="diagPanel" style="display:none;">
+    <div class="diag-card">
+      <div class="diag-card-title">🔌 Connection Status</div>
+      <div class="diag-row"><span class="diag-label">Worker URL</span><span class="diag-val status-checking" id="d-worker">Checking...</span></div>
+      <div class="diag-row"><span class="diag-label">Discord API</span><span class="diag-val status-checking" id="d-api">Checking...</span></div>
+      <div class="diag-row"><span class="diag-label">Bot Token</span><span class="diag-val status-checking" id="d-token">Checking...</span></div>
+      <div class="diag-row"><span class="diag-label">Server Access</span><span class="diag-val status-checking" id="d-guild">Checking...</span></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-card-title">🤖 Bot Info</div>
+      <div class="diag-row"><span class="diag-label">Bot Name</span><span class="diag-val" id="d-botname">—</span></div>
+      <div class="diag-row"><span class="diag-label">Server Name</span><span class="diag-val" id="d-servname">—</span></div>
+      <div class="diag-row"><span class="diag-label">Member Count</span><span class="diag-val" id="d-members">—</span></div>
+      <div class="diag-row"><span class="diag-label">Ping</span><span class="diag-val" id="d-ping">—</span></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-card-title">🛡️ Bot Permissions</div>
+      <div class="diag-row"><span class="diag-label">Manage Roles</span><span class="diag-val status-checking" id="p-roles">—</span></div>
+      <div class="diag-row"><span class="diag-label">Manage Channels</span><span class="diag-val status-checking" id="p-channels">—</span></div>
+      <div class="diag-row"><span class="diag-label">Kick Members</span><span class="diag-val status-checking" id="p-kick">—</span></div>
+      <div class="diag-row"><span class="diag-label">Ban Members</span><span class="diag-val status-checking" id="p-ban">—</span></div>
+      <div class="diag-row"><span class="diag-label">Send Messages</span><span class="diag-val status-checking" id="p-msg">—</span></div>
+    </div>
+    <button class="diag-btn" onclick="runDiagnostics()">🔄 Run Diagnostics Again</button>
+  </div>
 </div>
 
-<div id="inputarea">
-  <textarea id="input" rows="2" placeholder='e.g. "Create a category called Gaming with channels: valorant, rivals"'></textarea>
-  <button id="send-btn" onclick="send()">↑</button>
+<!-- MODALS -->
+<!-- Announce Modal -->
+<div class="modal-overlay" id="announceModal">
+  <div class="modal">
+    <div class="modal-title">📢 Send Announcement <button class="modal-close" onclick="closeModal('announceModal')">✕</button></div>
+    <div class="template-grid">
+      <button class="template-card" onclick="selectTemplate('live')" id="t-live">
+        <div class="t-icon">🔴</div><div class="t-name">Stream is Live</div>
+      </button>
+      <button class="template-card" onclick="selectTemplate('announce')" id="t-announce">
+        <div class="t-icon">📣</div><div class="t-name">General Announcement</div>
+      </button>
+      <button class="template-card" onclick="selectTemplate('game')" id="t-game">
+        <div class="t-icon">🎮</div><div class="t-name">Game Ping</div>
+      </button>
+      <button class="template-card" onclick="selectTemplate('event')" id="t-event">
+        <div class="t-icon">🎉</div><div class="t-name">Event</div>
+      </button>
+    </div>
+    <label>Channel</label>
+    <select id="a-channel"></select>
+    <label>Message</label>
+    <textarea id="a-message" rows="3" placeholder="Your message here..."></textarea>
+    <label>Ping Role (optional)</label>
+    <select id="a-pingrole"><option value="">No ping</option></select>
+    <button class="modal-btn" onclick="sendAnnouncement()">Send Announcement</button>
+    <button class="modal-btn secondary" onclick="closeModal('announceModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Role Modal -->
+<div class="modal-overlay" id="roleModal">
+  <div class="modal">
+    <div class="modal-title">🏷️ Create Role <button class="modal-close" onclick="closeModal('roleModal')">✕</button></div>
+    <label>Role Name</label>
+    <input type="text" id="r-name" placeholder="e.g. Streamer">
+    <label>Color <span id="colorPreview" class="color-preview" style="background:#99aab5"></span></label>
+    <div class="field-row">
+      <div>
+        <input type="text" id="r-color-hex" placeholder="#HEX code" oninput="updateColorPreview()">
+      </div>
+      <div>
+        <select id="r-color-name" onchange="updateColorFromName()">
+          <option value="">Pick a color</option>
+          <option value="#e74c3c">🔴 Red</option>
+          <option value="#e67e22">🟠 Orange</option>
+          <option value="#f1c40f">🟡 Yellow</option>
+          <option value="#2ecc71">🟢 Green</option>
+          <option value="#3498db">🔵 Blue</option>
+          <option value="#9b59b6">🟣 Purple</option>
+          <option value="#e91e8c">🩷 Pink</option>
+          <option value="#1abc9c">🩵 Cyan</option>
+          <option value="#f39c12">🟤 Gold</option>
+          <option value="#95a5a6">⚪ Gray</option>
+          <option value="#ffffff">⬜ White</option>
+          <option value="#000000">⬛ Black</option>
+        </select>
+      </div>
+    </div>
+    <label>Permissions</label>
+    <select id="r-perms">
+      <option value="0">No special permissions</option>
+      <option value="2048">Send Messages</option>
+      <option value="8">Administrator</option>
+      <option value="268435456">Manage Messages</option>
+      <option value="16">Manage Channels</option>
+    </select>
+    <button class="modal-btn" onclick="createRoleFromModal()">Create Role</button>
+    <button class="modal-btn secondary" onclick="closeModal('roleModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Channel Modal -->
+<div class="modal-overlay" id="channelModal">
+  <div class="modal">
+    <div class="modal-title">💬 Create Channel <button class="modal-close" onclick="closeModal('channelModal')">✕</button></div>
+    <label>Channel Name</label>
+    <input type="text" id="ch-name" placeholder="e.g. valorant">
+    <label>Type</label>
+    <select id="ch-type">
+      <option value="0">Text Channel</option>
+      <option value="2">Voice Channel</option>
+      <option value="4">Category</option>
+    </select>
+    <label>Category (optional)</label>
+    <select id="ch-category"><option value="">No category</option></select>
+    <label>Topic (optional)</label>
+    <input type="text" id="ch-topic" placeholder="Channel topic...">
+    <label>Slowmode (seconds)</label>
+    <input type="number" id="ch-slowmode" placeholder="0" min="0" max="21600">
+    <button class="modal-btn" onclick="createChannelFromModal()">Create Channel</button>
+    <button class="modal-btn secondary" onclick="closeModal('channelModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-title">⚠️ Confirm Action <button class="modal-close" onclick="closeModal('confirmModal')">✕</button></div>
+    <p id="confirmText" style="font-size:14px; color: var(--text); margin-bottom:16px; line-height:1.6;"></p>
+    <button class="modal-btn" id="confirmOk" onclick="">Confirm</button>
+    <button class="modal-btn secondary" onclick="closeModal('confirmModal')">Cancel</button>
+  </div>
 </div>
 
 <script>
 const WORKER = "https://discord-manager.mssoftpawsmeow.workers.dev";
 const GUILD_ID = "1450701622744449056";
 
-const ROLE_COLORS = {
-  red: 0xe74c3c, orange: 0xe67e22, yellow: 0xf1c40f, green: 0x2ecc71,
-  blue: 0x3498db, purple: 0x9b59b6, pink: 0xe91e8c, cyan: 0x1abc9c,
-  white: 0xffffff, black: 0x000000, gray: 0x95a5a6, gold: 0xf39c12,
+let guildData = { channels: [], roles: [], members: [] };
+let loading = false;
+let selectedTemplate = null;
+let currentCategory = 'all';
+
+const COMMANDS = {
+  all: [
+    { label: "📋 List Channels", cmd: "list channels", color: "blue" },
+    { label: "🏷️ List Roles", cmd: "list roles", color: "pink" },
+    { label: "👥 List Members", cmd: "list members", color: "purple" },
+    { label: "📜 Audit Log", cmd: "show audit log", color: "yellow" },
+    { label: "➕ Create Role", action: "openRoleModal", color: "pink" },
+    { label: "➕ Create Channel", action: "openChannelModal", color: "blue" },
+    { label: "📢 Announce", action: "openAnnounceModal", color: "peach" },
+    { label: "🔗 Create Invite", cmd: "create invite", color: "green" },
+  ],
+  roles: [
+    { label: "➕ Create Role", action: "openRoleModal", color: "pink" },
+    { label: "📋 List Roles", cmd: "list roles", color: "pink" },
+    { label: "🏛️ Role Hierarchy", cmd: "show role hierarchy", color: "purple" },
+  ],
+  channels: [
+    { label: "➕ Create Channel", action: "openChannelModal", color: "blue" },
+    { label: "📋 List Channels", cmd: "list channels", color: "blue" },
+  ],
+  members: [
+    { label: "👥 List Members", cmd: "list members", color: "purple" },
+  ],
+  announce: [
+    { label: "📢 Send Announcement", action: "openAnnounceModal", color: "peach" },
+  ],
+  info: [
+    { label: "📜 Audit Log", cmd: "show audit log", color: "yellow" },
+    { label: "🔗 Create Invite", cmd: "create invite", color: "green" },
+    { label: "📌 Show Pinned", cmd: "show pinned messages in general", color: "blue" },
+  ],
 };
 
-let loading = false;
-
-addMessage("system", "👋 Hey! I'm your Discord server assistant. Tell me what to set up and I'll handle it.\n\nTry: \"Create a category called Gaming with channels: valorant, rivals, off-topic\"");
-
-async function discordRequest(method, path, body) {
+async function discordReq(method, path, body) {
+  const t = Date.now();
   const res = await fetch(`${WORKER}/discord${path}`, {
     method,
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (res.status === 204) return null;
+  if (res.status === 204) return { _ping: Date.now() - t };
   const data = await res.json();
+  data._ping = Date.now() - t;
   if (!res.ok) throw new Error(data.message || `Error ${res.status}`);
   return data;
 }
 
-async function getGuildData() {
+async function refreshGuildData() {
   const [channels, roles] = await Promise.all([
-    discordRequest("GET", `/guilds/${GUILD_ID}/channels`),
-    discordRequest("GET", `/guilds/${GUILD_ID}/roles`),
+    discordReq("GET", `/guilds/${GUILD_ID}/channels`),
+    discordReq("GET", `/guilds/${GUILD_ID}/roles`),
   ]);
-  return { channels, roles };
+  guildData.channels = channels;
+  guildData.roles = roles;
+  // populate modal dropdowns
+  populateDropdowns();
 }
 
-function parseIntent(text) {
-  if (/create\s+(a\s+)?category/i.test(text)) {
-    const nameMatch = text.match(/category\s+(?:called\s+|named\s+)?["']?([^"'\n,]+?)["']?\s*(?:with|$)/i);
-    const channelsMatch = text.match(/with\s+channels?:?\s*(.+)/i);
-    return {
-      type: "create_category",
-      name: nameMatch?.[1]?.trim() || "New Category",
-      channels: channelsMatch?.[1]?.split(/[,\n]/).map(c => c.trim().replace(/\s+/g, "-").toLowerCase()).filter(Boolean) || [],
-    };
-  }
-  if (/create\s+(a\s+)?(?:text\s+)?channel/i.test(text)) {
-    const nameMatch = text.match(/channel\s+(?:called\s+|named\s+)?["']?([^"'\n,]+?)["']?(?:\s+in|\s+under|\s*$)/i);
-    const categoryMatch = text.match(/(?:in|under)\s+(?:the\s+)?["']?([^"'\n]+?)["']?\s*(?:category)?$/i);
-    return {
-      type: "create_channel",
-      name: nameMatch?.[1]?.trim().replace(/\s+/g, "-").toLowerCase() || "new-channel",
-      category: categoryMatch?.[1]?.trim() || null,
-    };
-  }
-  if (/create\s+(a\s+)?role/i.test(text)) {
-    const nameMatch = text.match(/role\s+(?:called\s+|named\s+)?["']?([^"'\n]+?)["']?(?:\s+with|\s*$)/i);
-    const colorMatch = text.match(/(?:with\s+)?(?:a\s+)?(\w+)\s+colou?r/i) || text.match(/colou?r\s+(\w+)/i);
-    const colorName = colorMatch?.[1]?.toLowerCase();
-    return {
-      type: "create_role",
-      name: nameMatch?.[1]?.trim() || "New Role",
-      color: colorName && ROLE_COLORS[colorName] !== undefined ? ROLE_COLORS[colorName] : null,
-      colorName: colorName || null,
-    };
-  }
-  if (/delete\s+(the\s+)?channel/i.test(text)) {
-    const nameMatch = text.match(/channel\s+(?:called\s+|named\s+)?["']?([^"'\n]+?)["']?\s*$/i);
-    return { type: "delete_channel", name: nameMatch?.[1]?.trim() || null };
-  }
-  if (/delete\s+(the\s+)?role/i.test(text)) {
-    const nameMatch = text.match(/role\s+(?:called\s+|named\s+)?["']?([^"'\n]+?)["']?\s*$/i);
-    return { type: "delete_role", name: nameMatch?.[1]?.trim() || null };
-  }
-  if (/list|show|what|display/i.test(text)) {
-    if (/channel/i.test(text)) return { type: "list_channels" };
-    if (/role/i.test(text)) return { type: "list_roles" };
-    return { type: "list_all" };
-  }
-  if (/mee6/i.test(text)) return { type: "mee6_info" };
-  return { type: "unknown" };
+function populateDropdowns() {
+  const catSel = document.getElementById('ch-category');
+  catSel.innerHTML = '<option value="">No category</option>';
+  guildData.channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position).forEach(c => {
+    catSel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+
+  const aCh = document.getElementById('a-channel');
+  aCh.innerHTML = '';
+  guildData.channels.filter(c => c.type === 0).sort((a,b) => a.position - b.position).forEach(c => {
+    aCh.innerHTML += `<option value="${c.id}">#${c.name}</option>`;
+  });
+
+  const aPing = document.getElementById('a-pingrole');
+  aPing.innerHTML = '<option value="">No ping</option>';
+  guildData.roles.filter(r => r.name !== '@everyone').sort((a,b) => b.position - a.position).forEach(r => {
+    aPing.innerHTML += `<option value="${r.id}">@${r.name}</option>`;
+  });
 }
 
-async function executeIntent(intent, guildData) {
-  switch (intent.type) {
-    case "create_category": {
-      const cat = await discordRequest("POST", `/guilds/${GUILD_ID}/channels`, { name: intent.name, type: 4 });
-      for (const ch of intent.channels) {
-        await discordRequest("POST", `/guilds/${GUILD_ID}/channels`, { name: ch, type: 0, parent_id: cat.id });
-      }
-      return { success: true, message: `✅ Created category **${intent.name}**${intent.channels.length ? ` with channels: ${intent.channels.join(", ")}` : ""}` };
-    }
-    case "create_channel": {
-      let parentId = null;
-      if (intent.category) {
-        const cat = guildData.channels.find(c => c.type === 4 && c.name.toLowerCase().includes(intent.category.toLowerCase()));
-        parentId = cat?.id || null;
-      }
-      await discordRequest("POST", `/guilds/${GUILD_ID}/channels`, { name: intent.name, type: 0, parent_id: parentId });
-      return { success: true, message: `✅ Created channel **#${intent.name}**${parentId ? ` under **${intent.category}**` : ""}` };
-    }
-    case "create_role": {
-      const body = { name: intent.name };
-      if (intent.color !== null) body.color = intent.color;
-      await discordRequest("POST", `/guilds/${GUILD_ID}/roles`, body);
-      return { success: true, message: `✅ Created role **@${intent.name}**${intent.colorName ? ` with ${intent.colorName} color` : ""}` };
-    }
-    case "delete_channel": {
-      if (!intent.name) return { success: false, message: "❌ Please specify a channel name." };
-      const ch = guildData.channels.find(c => c.name.toLowerCase() === intent.name.toLowerCase() && c.type === 0);
-      if (!ch) return { success: false, message: `❌ Couldn't find channel **#${intent.name}**` };
-      await discordRequest("DELETE", `/channels/${ch.id}`);
-      return { success: true, message: `✅ Deleted channel **#${intent.name}**` };
-    }
-    case "delete_role": {
-      if (!intent.name) return { success: false, message: "❌ Please specify a role name." };
-      const role = guildData.roles.find(r => r.name.toLowerCase() === intent.name.toLowerCase());
-      if (!role) return { success: false, message: `❌ Couldn't find role **@${intent.name}**` };
-      await discordRequest("DELETE", `/guilds/${GUILD_ID}/roles/${role.id}`);
-      return { success: true, message: `✅ Deleted role **@${intent.name}**` };
-    }
-    case "list_channels": {
-      const cats = guildData.channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
-      const uncategorized = guildData.channels.filter(c => c.type === 0 && !c.parent_id);
-      let msg = "📋 **Channels:**\n";
-      for (const cat of cats) {
-        msg += `\n📁 **${cat.name}**\n`;
-        const children = guildData.channels.filter(c => c.parent_id === cat.id).sort((a, b) => a.position - b.position);
-        for (const ch of children) msg += `  • #${ch.name}\n`;
-      }
-      if (uncategorized.length) {
-        msg += `\n📋 **Uncategorized**\n`;
-        for (const ch of uncategorized) msg += `  • #${ch.name}\n`;
-      }
-      return { success: true, message: msg };
-    }
-    case "list_roles": {
-      const roles = guildData.roles.filter(r => r.name !== "@everyone").sort((a, b) => b.position - a.position);
-      return { success: true, message: "🏷️ **Roles:**\n" + roles.map(r => `• @${r.name}`).join("\n") };
-    }
-    case "list_all": {
-      const cats = guildData.channels.filter(c => c.type === 4).length;
-      const chs = guildData.channels.filter(c => c.type === 0).length;
-      const roles = guildData.roles.filter(r => r.name !== "@everyone").length;
-      return { success: true, message: `📊 **Server Overview:**\n• ${cats} categories\n• ${chs} text channels\n• ${roles} roles\n\nTry "list channels" or "list roles" for details.` };
-    }
-    case "mee6_info": {
-      return { success: true, message: `**Mee6 Setup Links:**\n• Dashboard: https://mee6.xyz/dashboard/1450701622744449056\n• Welcome: https://mee6.xyz/dashboard/1450701622744449056/welcome\n• Auto-roles: https://mee6.xyz/dashboard/1450701622744449056/autorole\n• Leveling: https://mee6.xyz/dashboard/1450701622744449056/levels\n• Moderation: https://mee6.xyz/dashboard/1450701622744449056/moderator` };
-    }
-    default:
-      return { success: false, message: `❓ I didn't understand that. Try:\n• "Create a category called Gaming with channels: valorant, rivals"\n• "Create a role called Streamer with purple color"\n• "Create a channel called announcements"\n• "Delete the channel old-chat"\n• "List channels" / "List roles"` };
+// MESSAGES
+function addMsg(role, text, isError) {
+  const messages = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = `msg-row ${role === 'user' ? 'user' : 'bot'}`;
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${role === 'user' ? 'user' : isError ? 'error' : role === 'system' ? 'system' : 'bot'}`;
+  bubble.innerHTML = text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>')
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+  row.appendChild(bubble);
+  messages.appendChild(row);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function setLoading(v) {
+  loading = v;
+  document.getElementById('typing').style.display = v ? 'flex' : 'none';
+  document.getElementById('sendBtn').disabled = v;
+  if (!v) document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+}
+
+// INTENT PARSING + EXECUTION
+async function processCommand(text) {
+  const t = text.toLowerCase().trim();
+  await refreshGuildData();
+
+  // LIST
+  if (/list\s+channels?/i.test(t)) return listChannels();
+  if (/list\s+roles?/i.test(t)) return listRoles();
+  if (/list\s+members?/i.test(t)) return listMembers();
+  if (/audit\s+log|recent\s+actions?/i.test(t)) return showAuditLog();
+  if (/role\s+hierarch/i.test(t)) return showRoleHierarchy();
+  if (/create\s+invite/i.test(t)) return createInvite();
+  if (/pinned/i.test(t)) return showPinned(t);
+  if (/check\s+perm/i.test(t) || /what\s+can/i.test(t)) return checkPerms(t);
+
+  // CREATE ROLE
+  if (/create\s+(a\s+)?role/i.test(t)) {
+    const name = text.match(/role\s+(?:called\s+|named\s+)?["']?([^"'\n]+?)["']?(?:\s+with|\s*$)/i)?.[1]?.trim();
+    const hexMatch = text.match(/#([0-9a-fA-F]{6})/);
+    const colorNameMatch = text.match(/(?:with\s+)?(?:a\s+)?(\w+)\s+colou?r/i)?.[1]?.toLowerCase();
+    const COLOR_MAP = { red:'#e74c3c',orange:'#e67e22',yellow:'#f1c40f',green:'#2ecc71',blue:'#3498db',purple:'#9b59b6',pink:'#e91e8c',cyan:'#1abc9c',gold:'#f39c12',gray:'#95a5a6',white:'#ffffff',black:'#000000' };
+    const hex = hexMatch ? hexMatch[0] : (colorNameMatch && COLOR_MAP[colorNameMatch] ? COLOR_MAP[colorNameMatch] : null);
+    const color = hex ? parseInt(hex.replace('#',''), 16) : 0;
+    if (!name) return { success: false, message: "❌ Please include a role name." };
+    await discordReq("POST", `/guilds/${GUILD_ID}/roles`, { name, color });
+    return { success: true, message: `✅ Created role **@${name}**${hex ? ` with color ${hex}` : ''}` };
   }
+
+  // RENAME ROLE
+  if (/rename\s+role/i.test(t)) {
+    const m = text.match(/rename\s+role\s+["']?(.+?)["']?\s+to\s+["']?(.+?)["']?\s*$/i);
+    if (!m) return { success: false, message: "❌ Try: rename role OldName to NewName" };
+    const role = guildData.roles.find(r => r.name.toLowerCase() === m[1].trim().toLowerCase());
+    if (!role) return { success: false, message: `❌ Role **${m[1].trim()}** not found.` };
+    await discordReq("PATCH", `/guilds/${GUILD_ID}/roles/${role.id}`, { name: m[2].trim() });
+    return { success: true, message: `✅ Renamed role **@${m[1].trim()}** to **@${m[2].trim()}**` };
+  }
+
+  // DELETE ROLE
+  if (/delete\s+(the\s+)?role/i.test(t)) {
+    const name = text.match(/role\s+(?:called\s+|named\s+)?["']?([^"'\n]+?)["']?\s*$/i)?.[1]?.trim();
+    if (!name) return { success: false, message: "❌ Please specify a role name." };
+    const role = guildData.roles.find(r => r.name.toLowerCase() === name.toLowerCase());
+    if (!role) return { success: false, message: `❌ Role **${name}** not found.` };
+    await discordReq("DELETE", `/guilds/${GUILD_ID}/roles/${role.id}`);
+    return { success: true, message: `✅ Deleted role **@${name}**` };
+  }
+
+  // RECOLOR ROLE
+  if (/(?:change|set|update)\s+(?:the\s+)?(.+?)\s+role\s+(?:colou?r|color)/i.test(text) || /(?:colou?r|color)\s+(?:the\s+)?(.+?)\s+role/i.test(text)) {
+    const m = text.match(/(?:change|set|update)\s+(?:the\s+)?(.+?)\s+role\s+(?:colou?r|color)\s+to\s+(.+)/i) ||
+              text.match(/(?:colou?r|color)\s+(?:the\s+)?(.+?)\s+role\s+(?:to\s+)?(.+)/i);
+    if (!m) return { success: false, message: "❌ Try: change the Streamer role color to #ff00ff" };
+    const role = guildData.roles.find(r => r.name.toLowerCase() === m[1].trim().toLowerCase());
+    if (!role) return { success: false, message: `❌ Role **${m[1].trim()}** not found.` };
+    const hexM = m[2].match(/#([0-9a-fA-F]{6})/);
+    const COLOR_MAP = { red:0xe74c3c,orange:0xe67e22,yellow:0xf1c40f,green:0x2ecc71,blue:0x3498db,purple:0x9b59b6,pink:0xe91e8c,cyan:0x1abc9c,gold:0xf39c12,gray:0x95a5a6,white:0xffffff,black:0 };
+    const color = hexM ? parseInt(hexM[1], 16) : (COLOR_MAP[m[2].trim().toLowerCase()] ?? null);
+    if (color === null) return { success: false, message: "❌ Couldn't understand that color. Try a HEX code like #ff00ff or a color name." };
+    await discordReq("PATCH", `/guilds/${GUILD_ID}/roles/${role.id}`, { color });
+    return { success: true, message: `✅ Updated **@${role.name}** color to ${hexM ? hexM[0] : m[2].trim()}` };
+  }
+
+  // ASSIGN ROLE TO MEMBER
+  if (/(?:give|assign|add)\s+(?:the\s+)?(.+?)\s+role\s+to\s+(.+)/i.test(text)) {
+    const m = text.match(/(?:give|assign|add)\s+(?:the\s+)?(.+?)\s+role\s+to\s+(.+)/i);
+    return assignRole(m[1].trim(), m[2].trim(), true);
+  }
+  if (/(?:remove|take)\s+(?:the\s+)?(.+?)\s+role\s+(?:from)\s+(.+)/i.test(text)) {
+    const m = text.match(/(?:remove|take)\s+(?:the\s+)?(.+?)\s+role\s+(?:from)\s+(.+)/i);
+    return assignRole(m[1].trim(), m[2].trim(), false);
+  }
+
+  // CREATE CATEGORY
+  if (/create\s+(a\s+)?category/i.test(t)) {
+    const name = text.match(/category\s+(?:called\s+|named\s+)?["']?([^"'\n,]+?)["']?\s*(?:with|$)/i)?.[1]?.trim();
+    const chansMatch = text.match(/with\s+channels?:?\s*(.+)/i)?.[1];
+    const chans = chansMatch ? chansMatch.split(/[,\n]/).map(c => c.trim().replace(/\s+/g,'-').toLowerCase()).filter(Boolean) : [];
+    if (!name) return { success: false, message: "❌ Please include a category name." };
+    const cat = await discordReq("POST", `/guilds/${GUILD_ID}/channels`, { name, type: 4 });
+    for (const ch of chans) await discordReq("POST", `/guilds/${GUILD_ID}/channels`, { name: ch, type: 0, parent_id: cat.id });
+    return { success: true, message: `✅ Created category **${name}**${chans.length ? ` with channels: ${chans.join(', ')}` : ''}` };
+  }
+
+  // CREATE CHANNEL
+  if (/create\s+(a\s+)?(?:text\s+|voice\s+)?channel/i.test(t)) {
+    const name = text.match(/channel\s+(?:called\s+|named\s+)?["']?([^"'\n,]+?)["']?(?:\s+in|\s+under|\s*$)/i)?.[1]?.trim().replace(/\s+/g,'-').toLowerCase();
+    const catName = text.match(/(?:in|under)\s+(?:the\s+)?["']?([^"'\n]+?)["']?\s*(?:category)?$/i)?.[1]?.trim();
+    const isVoice = /voice/i.test(t);
+    const type = isVoice ? 2 : 0;
+    let parentId = null;
+    if (catName) {
+      const cat = guildData.channels.find(c => c.type === 4 && c.name.toLowerCase().includes(catName.toLowerCase()));
+      parentId = cat?.id || null;
+    }
+    if (!name) return { success: false, message: "❌ Please include a channel name." };
+    await discordReq("POST", `/guilds/${GUILD_ID}/channels`, { name, type, parent_id: parentId });
+    return { success: true, message: `✅ Created ${isVoice ? 'voice' : 'text'} channel **#${name}**${catName ? ` under **${catName}**` : ''}` };
+  }
+
+  // RENAME CHANNEL
+  if (/rename\s+(?:channel|the)\s+/i.test(t)) {
+    const m = text.match(/rename\s+(?:channel\s+)?["']?(.+?)["']?\s+to\s+["']?(.+?)["']?\s*$/i);
+    if (!m) return { success: false, message: "❌ Try: rename channel old-name to new-name" };
+    const ch = guildData.channels.find(c => c.name.toLowerCase() === m[1].trim().toLowerCase());
+    if (!ch) return { success: false, message: `❌ Channel **#${m[1].trim()}** not found.` };
+    await discordReq("PATCH", `/channels/${ch.id}`, { name: m[2].trim().replace(/\s+/g,'-').toLowerCase() });
+    return { success: true, message: `✅ Renamed **#${m[1].trim()}** to **#${m[2].trim()}**` };
+  }
+
+  // DELETE CHANNEL
+  if (/delete\s+(the\s+)?(?:channel|category)/i.test(t)) {
+    const name = text.match(/(?:channel|category)\s+(?:called\s+|named\s+)?["']?([^"'\n]+?)["']?\s*$/i)?.[1]?.trim();
+    if (!name) return { success: false, message: "❌ Please specify a channel or category name." };
+    const ch = guildData.channels.find(c => c.name.toLowerCase() === name.toLowerCase());
+    if (!ch) return { success: false, message: `❌ **${name}** not found.` };
+    await discordReq("DELETE", `/channels/${ch.id}`);
+    return { success: true, message: `✅ Deleted **${name}**` };
+  }
+
+  // SET TOPIC
+  if (/set\s+(?:the\s+)?topic/i.test(t)) {
+    const m = text.match(/(?:in|for|of)\s+["']?(.+?)["']?\s+(?:to|as)\s+["']?(.+?)["']?\s*$/i);
+    if (!m) return { success: false, message: "❌ Try: set topic in general to Welcome to the server!" };
+    const ch = guildData.channels.find(c => c.name.toLowerCase() === m[1].trim().toLowerCase());
+    if (!ch) return { success: false, message: `❌ Channel **#${m[1].trim()}** not found.` };
+    await discordReq("PATCH", `/channels/${ch.id}`, { topic: m[2].trim() });
+    return { success: true, message: `✅ Set topic in **#${m[1].trim()}** to "${m[2].trim()}"` };
+  }
+
+  // SLOWMODE
+  if (/slow\s*mode/i.test(t)) {
+    const m = text.match(/slowmode\s+(?:in\s+)?["']?(.+?)["']?\s+(?:to\s+)?(\d+)/i);
+    if (!m) return { success: false, message: "❌ Try: set slowmode in general to 30" };
+    const ch = guildData.channels.find(c => c.name.toLowerCase() === m[1].trim().toLowerCase());
+    if (!ch) return { success: false, message: `❌ Channel **#${m[1].trim()}** not found.` };
+    await discordReq("PATCH", `/channels/${ch.id}`, { rate_limit_per_user: parseInt(m[2]) });
+    return { success: true, message: `✅ Set slowmode in **#${m[1].trim()}** to **${m[2]}s**` };
+  }
+
+  // MOVE CHANNEL
+  if (/move\s+(?:channel\s+)?/i.test(t) && /(?:to|into)/i.test(t)) {
+    const m = text.match(/move\s+(?:channel\s+)?["']?(.+?)["']?\s+(?:to|into)\s+["']?(.+?)["']?\s*$/i);
+    if (!m) return { success: false, message: "❌ Try: move channel valorant into Gaming category" };
+    const ch = guildData.channels.find(c => c.name.toLowerCase() === m[1].trim().toLowerCase() && c.type === 0);
+    const cat = guildData.channels.find(c => c.name.toLowerCase().includes(m[2].trim().toLowerCase()) && c.type === 4);
+    if (!ch) return { success: false, message: `❌ Channel **#${m[1].trim()}** not found.` };
+    if (!cat) return { success: false, message: `❌ Category **${m[2].trim()}** not found.` };
+    await discordReq("PATCH", `/channels/${ch.id}`, { parent_id: cat.id });
+    return { success: true, message: `✅ Moved **#${ch.name}** into **${cat.name}**` };
+  }
+
+  // KICK
+  if (/kick\s+/i.test(t)) {
+    const name = text.match(/kick\s+["']?(.+?)["']?\s*$/i)?.[1]?.trim();
+    return kickBan(name, 'kick');
+  }
+
+  // BAN
+  if (/ban\s+/i.test(t)) {
+    const name = text.match(/ban\s+["']?(.+?)["']?\s*$/i)?.[1]?.trim();
+    return kickBan(name, 'ban');
+  }
+
+  // MEMBER LOOKUP
+  if (/(?:look\s*up|info\s+(?:on|about)|tell\s+me\s+about)\s+/i.test(t)) {
+    const name = text.match(/(?:look\s*up|info\s+(?:on|about)|tell\s+me\s+about)\s+["']?(.+?)["']?\s*$/i)?.[1]?.trim();
+    return memberLookup(name);
+  }
+
+  return { success: false, message: `❓ I didn't understand that. Try things like:\n• "Create a role called VIP with #ff00ff"\n• "Rename channel general to chat"\n• "Create a category called Gaming with channels: valorant, rivals"\n• "List channels" / "List roles"\n• "Kick username"\n• "Set slowmode in general to 30"` };
 }
 
-function addMessage(role, text, isError) {
-  const wrap = document.createElement("div");
-  wrap.className = `msg-wrap ${role === "user" ? "user" : "bot"}`;
-  const bubble = document.createElement("div");
-  bubble.className = `bubble ${role === "user" ? "user" : isError ? "error" : role === "system" ? "system" : "bot"}`;
-  bubble.innerHTML = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>");
-  wrap.appendChild(bubble);
-  document.getElementById("messages").appendChild(wrap);
-  document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+async function listChannels() {
+  const cats = guildData.channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
+  const uncategorized = guildData.channels.filter(c => c.type === 0 && !c.parent_id);
+  let msg = "**📋 Channels:**\n";
+  for (const cat of cats) {
+    msg += `\n📁 **${cat.name}**\n`;
+    guildData.channels.filter(c => c.parent_id === cat.id).sort((a,b) => a.position - b.position).forEach(ch => {
+      msg += `  ${ch.type === 2 ? '🔊' : '#'} ${ch.name}\n`;
+    });
+  }
+  if (uncategorized.length) { msg += `\n📋 **Uncategorized**\n`; uncategorized.forEach(ch => { msg += `  #${ch.name}\n`; }); }
+  return { success: true, message: msg };
 }
 
-function setInput(val) {
-  document.getElementById("input").value = val;
-  document.getElementById("input").focus();
+async function listRoles() {
+  const roles = guildData.roles.filter(r => r.name !== '@everyone').sort((a,b) => b.position - a.position);
+  const msg = "**🏷️ Roles:**\n" + roles.map(r => {
+    const hex = r.color ? '#' + r.color.toString(16).padStart(6,'0') : 'no color';
+    return `• **@${r.name}** — ${hex}`;
+  }).join('\n');
+  return { success: true, message: msg };
 }
 
+async function listMembers() {
+  try {
+    const members = await discordReq("GET", `/guilds/${GUILD_ID}/members?limit=50`);
+    const msg = "**👥 Members (up to 50):**\n" + members.map(m => {
+      const name = m.nick || m.user.global_name || m.user.username;
+      const roles = m.roles.length;
+      return `• **${name}** — ${roles} role${roles !== 1 ? 's' : ''}`;
+    }).join('\n');
+    return { success: true, message: msg };
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+async function showAuditLog() {
+  try {
+    const log = await discordReq("GET", `/guilds/${GUILD_ID}/audit-logs?limit=10`);
+    const ACTION_NAMES = { 1:'Server Updated',10:'Channel Created',11:'Channel Updated',12:'Channel Deleted',20:'Member Kicked',22:'Member Banned',23:'Member Unbanned',24:'Member Updated',25:'Member Role Updated',30:'Role Created',31:'Role Updated',32:'Role Deleted' };
+    const users = {};
+    log.users.forEach(u => { users[u.id] = u.global_name || u.username; });
+    const msg = "**📜 Recent Audit Log:**\n" + log.audit_log_entries.map(e => {
+      const action = ACTION_NAMES[e.action_type] || `Action #${e.action_type}`;
+      const user = users[e.user_id] || 'Unknown';
+      return `• **${action}** by ${user}`;
+    }).join('\n');
+    return { success: true, message: msg };
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+async function showRoleHierarchy() {
+  const roles = guildData.roles.sort((a,b) => b.position - a.position);
+  const msg = "**🏛️ Role Hierarchy (top → bottom):**\n" + roles.map((r,i) => {
+    const hex = r.color ? '#' + r.color.toString(16).padStart(6,'0') : '';
+    return `${i+1}. **@${r.name}**${hex ? ` (${hex})` : ''}`;
+  }).join('\n');
+  return { success: true, message: msg };
+}
+
+async function createInvite() {
+  try {
+    const ch = guildData.channels.find(c => c.type === 0);
+    if (!ch) return { success: false, message: "❌ No text channel found to create invite from." };
+    const invite = await discordReq("POST", `/channels/${ch.id}/invites`, { max_age: 86400, max_uses: 0 });
+    return { success: true, message: `✅ **Invite Created!**\nhttps://discord.gg/${invite.code}\n\n• Channel: #${ch.name}\n• Expires: 24 hours\n• Max uses: Unlimited` };
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+async function showPinned(t) {
+  const name = t.match(/(?:in|from)\s+["']?([^\s"']+)["']?/i)?.[1] || 'general';
+  const ch = guildData.channels.find(c => c.name.toLowerCase() === name.toLowerCase() && c.type === 0);
+  if (!ch) return { success: false, message: `❌ Channel **#${name}** not found.` };
+  try {
+    const pins = await discordReq("GET", `/channels/${ch.id}/pins`);
+    if (!pins.length) return { success: true, message: `📌 No pinned messages in **#${ch.name}**` };
+    const msg = `**📌 Pinned in #${ch.name}:**\n` + pins.slice(0,5).map(p => `• ${p.author.username}: ${p.content.slice(0,80)}${p.content.length > 80 ? '...' : ''}`).join('\n');
+    return { success: true, message: msg };
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+async function checkPerms(t) {
+  const name = t.match(/(?:can\s+)?(?:the\s+)?["']?(.+?)["']?\s+role/i)?.[1]?.trim();
+  if (!name) return { success: false, message: "❌ Try: what can the Viewer role see?" };
+  const role = guildData.roles.find(r => r.name.toLowerCase() === name.toLowerCase());
+  if (!role) return { success: false, message: `❌ Role **${name}** not found.` };
+  const PERM_NAMES = { 1:'Create Invite',2:'Kick Members',4:'Ban Members',8:'Administrator',16:'Manage Channels',32:'Manage Server',64:'Add Reactions',128:'View Audit Log',256:'Priority Speaker',512:'Stream',1024:'View Channels',2048:'Send Messages',4096:'Send TTS',8192:'Manage Messages',16384:'Embed Links',32768:'Attach Files',65536:'Read History',131072:'Mention Everyone',262144:'Use External Emoji',524288:'View Insights',1048576:'Connect',2097152:'Speak',4194304:'Mute Members',8388608:'Deafen Members',16777216:'Move Members',33554432:'Use VAD',268435456:'Manage Roles',536870912:'Manage Webhooks',1073741824:'Manage Emojis' };
+  const perms = role.permissions;
+  const has = Object.entries(PERM_NAMES).filter(([bit]) => (perms & parseInt(bit)) !== 0).map(([,name]) => name);
+  if ((perms & 8) !== 0) return { success: true, message: `**@${role.name}** has **Administrator** (all permissions)` };
+  const msg = has.length ? `**@${role.name}** permissions:\n` + has.map(p => `• ${p}`).join('\n') : `**@${role.name}** has no special permissions.`;
+  return { success: true, message: msg };
+}
+
+async function assignRole(roleName, memberName, add) {
+  const role = guildData.roles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+  if (!role) return { success: false, message: `❌ Role **${roleName}** not found.` };
+  try {
+    const members = await discordReq("GET", `/guilds/${GUILD_ID}/members?limit=100`);
+    const member = members.find(m => (m.nick || m.user.global_name || m.user.username).toLowerCase() === memberName.toLowerCase() || m.user.username.toLowerCase() === memberName.toLowerCase());
+    if (!member) return { success: false, message: `❌ Member **${memberName}** not found.` };
+    if (add) {
+      await discordReq("PUT", `/guilds/${GUILD_ID}/members/${member.user.id}/roles/${role.id}`);
+      return { success: true, message: `✅ Gave **@${role.name}** to **${memberName}**` };
+    } else {
+      await discordReq("DELETE", `/guilds/${GUILD_ID}/members/${member.user.id}/roles/${role.id}`);
+      return { success: true, message: `✅ Removed **@${role.name}** from **${memberName}**` };
+    }
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+async function memberLookup(name) {
+  if (!name) return { success: false, message: "❌ Please specify a member name." };
+  try {
+    const members = await discordReq("GET", `/guilds/${GUILD_ID}/members?limit=100`);
+    const member = members.find(m => (m.nick || m.user.global_name || m.user.username).toLowerCase() === name.toLowerCase() || m.user.username.toLowerCase() === name.toLowerCase());
+    if (!member) return { success: false, message: `❌ Member **${name}** not found.` };
+    const displayName = member.nick || member.user.global_name || member.user.username;
+    const roles = member.roles.map(rid => guildData.roles.find(r => r.id === rid)?.name).filter(Boolean);
+    const joined = new Date(member.joined_at).toLocaleDateString();
+    const msg = `**👤 ${displayName}**\n• Username: ${member.user.username}\n• Joined: ${joined}\n• Roles (${roles.length}): ${roles.join(', ') || 'none'}`;
+    return { success: true, message: msg };
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+async function kickBan(name, type) {
+  if (!name) return { success: false, message: `❌ Please specify a member to ${type}.` };
+  try {
+    const members = await discordReq("GET", `/guilds/${GUILD_ID}/members?limit=100`);
+    const member = members.find(m => (m.nick || m.user.global_name || m.user.username).toLowerCase() === name.toLowerCase() || m.user.username.toLowerCase() === name.toLowerCase());
+    if (!member) return { success: false, message: `❌ Member **${name}** not found.` };
+    if (type === 'kick') await discordReq("DELETE", `/guilds/${GUILD_ID}/members/${member.user.id}`);
+    else await discordReq("PUT", `/guilds/${GUILD_ID}/bans/${member.user.id}`);
+    return { success: true, message: `✅ **${name}** has been ${type === 'kick' ? 'kicked' : 'banned'}.` };
+  } catch(e) { return { success: false, message: `❌ ${e.message}` }; }
+}
+
+// SEND
 async function send() {
-  const input = document.getElementById("input");
+  const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text || loading) return;
-  input.value = "";
-  loading = true;
-  document.getElementById("send-btn").disabled = true;
-
-  addMessage("user", text);
-  document.getElementById("typing").style.display = "flex";
-  document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
-
+  input.value = '';
+  autoResize();
+  addMsg('user', text);
+  setLoading(true);
   try {
-    const guildData = await getGuildData();
-    const intent = parseIntent(text);
-    const result = await executeIntent(intent, guildData);
-    document.getElementById("typing").style.display = "none";
-    addMessage("bot", result.message, !result.success);
-  } catch (e) {
-    document.getElementById("typing").style.display = "none";
-    addMessage("bot", `❌ Error: ${e.message}`, true);
+    const result = await processCommand(text);
+    addMsg('bot', result.message, !result.success);
+  } catch(e) {
+    addMsg('bot', `❌ Error: ${e.message}`, true);
   }
-
-  loading = false;
-  document.getElementById("send-btn").disabled = false;
+  setLoading(false);
 }
 
-document.getElementById("input").addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+// MODALS
+function openRoleModal() { refreshGuildData(); document.getElementById('roleModal').classList.add('open'); }
+function openChannelModal() { refreshGuildData().then(() => { document.getElementById('channelModal').classList.add('open'); }); }
+function openAnnounceModal() { refreshGuildData().then(() => { document.getElementById('announceModal').classList.add('open'); }); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function updateColorPreview() {
+  const val = document.getElementById('r-color-hex').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) document.getElementById('colorPreview').style.background = val;
+}
+function updateColorFromName() {
+  const val = document.getElementById('r-color-name').value;
+  if (val) { document.getElementById('r-color-hex').value = val; updateColorPreview(); }
+}
+
+async function createRoleFromModal() {
+  const name = document.getElementById('r-name').value.trim();
+  const hexVal = document.getElementById('r-color-hex').value.trim();
+  const perms = document.getElementById('r-perms').value;
+  if (!name) return alert('Please enter a role name.');
+  const color = /^#[0-9a-fA-F]{6}$/.test(hexVal) ? parseInt(hexVal.replace('#',''), 16) : 0;
+  try {
+    await discordReq("POST", `/guilds/${GUILD_ID}/roles`, { name, color, permissions: perms });
+    closeModal('roleModal');
+    addMsg('bot', `✅ Created role **@${name}**${hexVal ? ` with color ${hexVal}` : ''}`);
+  } catch(e) { addMsg('bot', `❌ ${e.message}`, true); closeModal('roleModal'); }
+}
+
+async function createChannelFromModal() {
+  const name = document.getElementById('ch-name').value.trim().replace(/\s+/g,'-').toLowerCase();
+  const type = parseInt(document.getElementById('ch-type').value);
+  const parentId = document.getElementById('ch-category').value || null;
+  const topic = document.getElementById('ch-topic').value.trim() || null;
+  const slowmode = parseInt(document.getElementById('ch-slowmode').value) || 0;
+  if (!name) return alert('Please enter a channel name.');
+  try {
+    await discordReq("POST", `/guilds/${GUILD_ID}/channels`, { name, type, parent_id: parentId, topic, rate_limit_per_user: slowmode });
+    closeModal('channelModal');
+    const typeName = type === 4 ? 'Category' : type === 2 ? 'Voice channel' : 'Channel';
+    addMsg('bot', `✅ ${typeName} **#${name}** created!`);
+  } catch(e) { addMsg('bot', `❌ ${e.message}`, true); closeModal('channelModal'); }
+}
+
+const TEMPLATES = {
+  live: { title: '🔴 Stream is Live!', color: 0xe74c3c, desc: "We're live! Come hang out 🎮" },
+  announce: { title: '📣 Announcement', color: 0xf4a7b9, desc: '' },
+  game: { title: '🎮 Game Night!', color: 0xa8d8ea, desc: "Who's down to play? Drop in the chat! 🎯" },
+  event: { title: '🎉 Event!', color: 0xc9b8e8, desc: "Something exciting is happening! Don't miss it ✨" },
+};
+function selectTemplate(t) {
+  selectedTemplate = t;
+  document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById(`t-${t}`).classList.add('selected');
+  const tmpl = TEMPLATES[t];
+  if (!document.getElementById('a-message').value) document.getElementById('a-message').value = tmpl.desc;
+}
+
+async function sendAnnouncement() {
+  const channelId = document.getElementById('a-channel').value;
+  const message = document.getElementById('a-message').value.trim();
+  const pingRoleId = document.getElementById('a-pingrole').value;
+  if (!channelId || !message) return alert('Please select a channel and enter a message.');
+  const tmpl = selectedTemplate ? TEMPLATES[selectedTemplate] : TEMPLATES.announce;
+  const embed = { title: tmpl.title, description: message, color: tmpl.color, timestamp: new Date().toISOString() };
+  const content = pingRoleId ? `<@&${pingRoleId}>` : '';
+  try {
+    await discordReq("POST", `/channels/${channelId}/messages`, { content, embeds: [embed] });
+    closeModal('announceModal');
+    addMsg('bot', `✅ Announcement sent!`);
+    document.getElementById('a-message').value = '';
+    selectedTemplate = null;
+    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+  } catch(e) { addMsg('bot', `❌ ${e.message}`, true); closeModal('announceModal'); }
+}
+
+// COMMAND BUTTONS
+function setCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === cat));
+  renderCmds();
+}
+
+function renderCmds() {
+  const scroll = document.getElementById('cmdScroll');
+  scroll.innerHTML = '';
+  const cmds = COMMANDS[currentCategory] || COMMANDS.all;
+  cmds.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = `cmd-btn ${c.color || ''}`;
+    btn.textContent = c.label;
+    if (c.cmd) btn.onclick = () => { document.getElementById('input').value = c.cmd; send(); };
+    else if (c.action) btn.onclick = () => window[c.action]();
+    scroll.appendChild(btn);
+  });
+}
+
+// DIAGNOSTICS
+function showTab(tab) {
+  const isChat = tab === 'chat';
+  document.getElementById('chatPanel').style.display = isChat ? 'flex' : 'none';
+  document.getElementById('diagPanel').style.display = isChat ? 'none' : 'flex';
+  document.querySelectorAll('.header-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (!isChat) runDiagnostics();
+}
+
+async function runDiagnostics() {
+  const set = (id, val, status) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    el.className = `diag-val ${status}`;
+  };
+  ['d-worker','d-api','d-token','d-guild'].forEach(id => set(id, 'Checking...', 'status-checking'));
+
+  // Worker
+  try {
+    const t = Date.now();
+    await fetch(`${WORKER}/discord/gateway`);
+    set('d-worker', `Online (${Date.now()-t}ms)`, 'status-ok');
+  } catch(e) { set('d-worker', 'Unreachable', 'status-err'); return; }
+
+  // Bot / Guild
+  try {
+    const t = Date.now();
+    const bot = await discordReq("GET", '/users/@me');
+    const ping = Date.now() - t;
+    set('d-api', `Online`, 'status-ok');
+    set('d-token', `Valid`, 'status-ok');
+    document.getElementById('d-botname').textContent = bot.username || '—';
+    document.getElementById('d-ping').textContent = `${ping}ms`;
+  } catch(e) { set('d-api','Error','status-err'); set('d-token','Invalid','status-err'); return; }
+
+  try {
+    const guild = await discordReq("GET", `/guilds/${GUILD_ID}?with_counts=true`);
+    set('d-guild', 'Connected', 'status-ok');
+    document.getElementById('d-servname').textContent = guild.name || '—';
+    document.getElementById('d-members').textContent = guild.approximate_member_count || '—';
+  } catch(e) { set('d-guild', 'No Access', 'status-err'); return; }
+
+  // Permissions via bot member
+  try {
+    const me = await discordReq("GET", '/users/@me');
+    const member = await discordReq("GET", `/guilds/${GUILD_ID}/members/${me.id}`);
+    const roles = guildData.roles.filter(r => member.roles.includes(r.id));
+    let perms = 0;
+    roles.forEach(r => { perms |= parseInt(r.permissions); });
+    const isAdmin = (perms & 8) !== 0;
+    const check = (bit, id) => document.getElementById(id).textContent = isAdmin || (perms & bit) !== 0 ? '✅' : '❌';
+    const setPC = (id, v) => { document.getElementById(id).textContent = v; document.getElementById(id).className = `diag-val ${v === '✅' ? 'status-ok' : 'status-err'}`; };
+    setPC('p-roles', isAdmin || (perms & 268435456) ? '✅' : '❌');
+    setPC('p-channels', isAdmin || (perms & 16) ? '✅' : '❌');
+    setPC('p-kick', isAdmin || (perms & 2) ? '✅' : '❌');
+    setPC('p-ban', isAdmin || (perms & 4) ? '✅' : '❌');
+    setPC('p-msg', isAdmin || (perms & 2048) ? '✅' : '❌');
+  } catch(e) { ['p-roles','p-channels','p-kick','p-ban','p-msg'].forEach(id => { document.getElementById(id).textContent = '?'; }); }
+}
+
+// AUTO RESIZE TEXTAREA
+function autoResize() {
+  const ta = document.getElementById('input');
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 100) + 'px';
+}
+document.getElementById('input').addEventListener('input', autoResize);
+document.getElementById('input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+
+// INIT
+window.addEventListener('load', () => {
+  addMsg('system', '🌸 Hey! I\'m your server manager. Use the buttons or type naturally.\n\nTry: "Create a role called VIP with #ff69b4" or "List channels"');
+  renderCmds();
+  refreshGuildData().catch(() => {});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
 });
 </script>
 </body>
